@@ -1,30 +1,57 @@
-const performLogin = function( e ) {
-    	e.preventDefault();
-    	const text = document.querySelector("#inputField")
+const nextButton = function( e ) {
+  e.preventDefault();
+  const text = document.querySelector("#inputField")
 
-	const json = {
-		    username: text.value
-    	}
+  if(currentStep === "username"){
+    username = text.value;
+  }
+  else if (currentStep === "password") {
+    password = text.value;
+  }
+  else if (currentStep === "mfa") {
+    mfa = text.value;
+  }
 
-	// add to server
-  	fetch("/submit${step}", {
-    	 method: "POST",
-    	 headers: { "Content-Type": "application/json" },
-    	 body: json
-  	})
-    	.then(function(response) {
-      		return response.json(); // wait on response
-    	})
-    	.then(json => {
-    		// update screen to next page if username valid
-	});
+  const json = {
+    username: username,
+    password: password,
+    mfa: mfa
+  }
 
-	step = step + 1
-	return false; 
+  // add to server
+  fetch("/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: json
+  })
+  updateScreen()
+  return false;
+}
+
+const updateScreen = function() {
+  // update screen to parse next arg
+  if(currentStep === "username"){
+    moveToPassword()
+    currentStep = "password"
+  }
+  else if (currentStep === "password") {
+    moveToMFA()
+    currentStep = "mfa"
+  }
+}
+
+const moveToPassword = function(json) {
+  document.getElementById("#headerField").placeholder = "Complete sign in...";
+  document.getElementById("#subheaderField").placeholder = "${username}";
+  document.getElementById("#inputField").placeholder = "Enter your password";
+  document.getElementById("#forgotField").placeholder = "Forgot password?";
 }
 
 window.onload = function() {
-	var step = 0
-    	const button = document.querySelector( '#loginButton' )
-    	button.onclick = performLogin
+  var username = "";
+  var password = "";
+  var mfa = "";
+  var currentStep = "username"
+  const button = document.querySelector( '#loginButton' )
+  button.onclick = nextButton
 }
