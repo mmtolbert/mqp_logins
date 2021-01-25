@@ -14,7 +14,7 @@ app.get("/", (request, response) => {
 });
 
 /*
-Login Handlers
+Login Handler
 */
 app.post("/submit", (req, res) => {
   var username = req.body.username;
