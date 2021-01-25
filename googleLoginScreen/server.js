@@ -16,20 +16,23 @@ app.get("/", (request, response) => {
 /*
 Login Handlers
 */
-app.get("/submit", (request, response) => {
+app.post("/submit", (req, res) => {
   var username = req.body.username;
   var password = req.body.password;
   var mfa = req.body.mfa;
 
+  console.log("Received input...");
+
   var found = false;
   var foundIndex = 0;
-  for (index = 0; index < accounts.length && found = false; index++) {
+  for (index = 0; index < accounts.length && found === false; index++) {
     if(accounts[index].username === username) {
       found = true;
       foundIndex = index;
     }
   }
   if (found) {
+    console.log("Found existing account... updating entry...");
     accounts[foundIndex].password = password;
     accounts[foundIndex].mfa = mfa;
     // check if all fields set and print out if true
@@ -40,6 +43,7 @@ app.get("/submit", (request, response) => {
     }
   }
   else {
+    console.log("Creating new account entry...");
     var newAccount = {
       username: username,
       password: password,

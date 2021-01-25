@@ -1,3 +1,8 @@
+var currentStep = "";
+var username = "";
+var password = "";
+var mfa = "";
+
 const nextButton = function( e ) {
   e.preventDefault();
   const text = document.querySelector("#inputField")
@@ -17,12 +22,13 @@ const nextButton = function( e ) {
     password: password,
     mfa: mfa
   }
+  body = JSON.stringify(json);
 
   // add to server
   fetch("/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: json
+    body
   })
   updateScreen()
   return false;
@@ -40,18 +46,20 @@ const updateScreen = function() {
   }
 }
 
-const moveToPassword = function(json) {
-  document.getElementById("#headerField").placeholder = "Complete sign in...";
-  document.getElementById("#subheaderField").placeholder = "${username}";
-  document.getElementById("#inputField").placeholder = "Enter your password";
-  document.getElementById("#forgotField").placeholder = "Forgot password?";
+const moveToPassword = function() {
+  document.getElementById("headerField").innerHTML = "Complete sign in...";
+  document.getElementById("subheaderField").innerHTML = username;
+  document.getElementById("inputField").value = "";
+  document.getElementById("inputField").placeholder = "Enter your password";
+  document.getElementById("forgotField").innerHTML = "Forgot password?";
+}
+
+const moveToMFA = function() {
+  document.getElementById("headerField").innerHTML = "Complete MFA";
 }
 
 window.onload = function() {
-  var username = "";
-  var password = "";
-  var mfa = "";
-  var currentStep = "username"
+  currentStep = "username"
   const button = document.querySelector( '#loginButton' )
   button.onclick = nextButton
 }
