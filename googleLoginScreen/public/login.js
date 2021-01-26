@@ -54,8 +54,6 @@ const moveToPassword = function() {
   document.getElementById("subheaderField").innerHTML = username;
   document.getElementById("inputField").value = "";
   document.getElementById("inputField").placeholder = "Enter your password";
-  var inputField = document.querySelector("#inputField")
-  inputField.setAttribute("type", "password")
   document.getElementById("forgotField").innerHTML = "Forgot password?";
 }
 
@@ -63,8 +61,6 @@ const moveToMFA = function() {
   if (username === "wpi.mfa.1@gmail.com") {
     document.getElementById("inputField").value = "";
     document.getElementById("inputField").placeholder = "Enter your one-time passcode";
-    var inputField = document.querySelector("#inputField")
-    inputField.removeAttribute("type")
   }
 }
 
