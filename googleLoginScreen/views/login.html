@@ -12,16 +12,13 @@
     </div>
     <p id="headerField">Sign in</p>
     <p id="subheaderField">Use your Google Account</p>
-    <div class="login">
+    <div class="login" id="loginBackdrop">
       <br><br>
       <div>
         <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
       </div>
-      <br>
-      <div style="position:relative;">
-        <input readonly type="text" id="Bullets" />
-        <input id="inputField" type="text" style="position:absolute;left:0px;top:0px;opacity:0;" onkeyup="document.getElementById('Bullets').value=this.value.replace(/(.)/g,'•');" />
-      </div>
+      <input readonly type="text" id="Bullets" style="opacity:0;" />
+      <input id="inputField" type="text" placeholder="Email or phone"/>
       <br><br>
       <a href="#">
         <div id="loginButton" class="button">

