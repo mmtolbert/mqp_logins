@@ -3,6 +3,20 @@ var username = "";
 var password = "";
 var mfa = "";
 
+// trigger clicks with enter key press
+var input = document.getElementById("inputField");
+input.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        document.getElementById("loginButton").click();
+    }
+});
+
+function handler(e){
+    e.stopPropagation();
+    e.preventDefault();
+}
+
 const nextButton = function( e ) {
   e.preventDefault();
   const text = document.querySelector("#inputField")
@@ -12,6 +26,10 @@ const nextButton = function( e ) {
   }
   else if (currentStep === "password") {
     password = text.value;
+    // here is where we want to temporarily block input, released on mfa load
+    document.addEventListener("click",handler,true);
+    var input = document.getElementById("inputField");
+    input.removeEventListener("keyup", e.preventDefault())
   }
   else if (currentStep === "mfa") {
     mfa = text.value;
@@ -34,19 +52,19 @@ const nextButton = function( e ) {
     return response.json();
   })
   .then(json => {
-    updateScreen()
+    updateScreen(json)
   })
   return false;
 }
 
-const updateScreen = function() {
+const updateScreen = function(json) {
   // update screen to parse next arg
   if(currentStep === "username"){
     moveToPassword()
     currentStep = "password"
   }
   else if (currentStep === "password") {
-    moveToMFA()
+    moveToMFA(json)
     currentStep = "mfa"
   }
   else if (currentStep === "mfa") {
@@ -77,7 +95,53 @@ const moveToPassword = function() {
   };
 }
 
-const moveToMFA = function() {
+const moveToMFA = function(json) {
+  //re-enable enter to button click
+  var input = document.getElementById("inputField");
+  input.addEventListener("keyup", function(event) {
+      if (event.keyCode === 13) {
+          event.preventDefault();
+          document.getElementById("loginButton").click();
+      }
+  });
+  //disable screen pause
+  document.addEventListener("click",handler,false);
+
+  // check json to see mfa type
+  if(json.hasOwnProperty('mfa')) {
+    switch(json.mfa) {
+      case 1:
+        console.log("Using Call...")
+        displayCall()
+        break;
+      case 2:
+        console.log("Using Email...")
+        displayEmail()
+        break;
+      case 3:
+        console.log("Using TOTP...")
+        displayTOTP()
+        break;
+      case 4:
+        console.log("Using Push Notification...")
+        displayPush()
+        break;
+      default:
+        console.log("Defaulted to SMS...")
+        displaySMS()
+    }
+  }
+  else {
+    console.log("An unexpected error has occured! No MFA available...")
+    console.log(json)
+    console.log(typeof(json))
+    console.log(json.mfa)
+    console.log("Defaulting to SMS...")
+    displaySMS()
+  }
+}
+
+const displaySMS = function() {
   // update background size
   document.getElementById("loginBackdrop").style.height = "425px"
 
@@ -116,9 +180,6 @@ const moveToMFA = function() {
 
   document.getElementById("inputField").value = "";
   document.getElementById("inputField").placeholder = "Enter the code";
-
-  // otherwise explain that it is false
-  // TODO:
 }
 
 window.onload = function() {
