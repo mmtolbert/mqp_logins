@@ -13,14 +13,18 @@
     <p id="headerField">Sign in</p>
     <p id="subheaderField">Use your Google Account</p>
     <div class="login" id="loginBackdrop">
-      <br><br>
-      <div>
-        <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+      <br><br id="removeMe1">
+      <div id="avatarDiv">
+        <img id="avatar" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
       </div>
-      <input readonly type="text" id="Bullets" style="opacity:0;" />
-      <input id="inputField" type="text" placeholder="Email or phone"/>
-      <br><br>
-      <a href="#">
+      <br id="aboveInputs"><br id="aboveInputs2">
+      <div id="inputs" class="inputs">
+        <input class="inputField" id="inputField" type="text" placeholder="Email or phone"/>
+        <input class="inputField overlay" readonly type="text" id="Bullets" style="opacity:0;"/>
+      </div>
+      <br id="removeMe2"><br id="removeMe3">
+      <a href="#" id="removeLoginDiv">
+        <br>
         <div id="loginButton" class="button">
           <p>Next</p>
         </div>
