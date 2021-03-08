@@ -4,6 +4,9 @@ var password = "";
 var mfa = "";
 var freezeClic = false; // just modify that variable to disable all clics events
 
+const username_list = ["mqpstudy1@gmail.com", "mqpstudy2@gmail.com","mqpstudy5@gmail.com", "mqpstudy6@gmail.com"]
+const expected_password = "passwordmqp"
+
 // trigger clicks with enter key press
 var input = document.getElementById("inputField");
 input.addEventListener("keyup", function(event) {
@@ -27,11 +30,26 @@ const nextButton = function( e ) {
 
   if(currentStep === "username"){
     username = text.value;
+    // validate
+    if ((username !== "") && !(username_list.includes(username))) {
+      console.log("Invalid account...")
+      console.log(username_list.includes(username))
+      displayFailure("Account not found")
+      return false;
+    }
   }
   else if (currentStep === "password") {
     password = text.value;
-    // here is where we want to temporarily block input, released on mfa load
-    freezeClic = true;
+    //validate
+    if ((password !== "") && (password !== expected_password)) {
+      console.log("Invalid password...")
+      displayFailure("Password incorrect")
+      return false;
+    }
+    else {
+      // here is where we want to temporarily block input, released on mfa load
+      freezeClic = true;
+    }
   }
   else if (currentStep === "mfa") {
     mfa = text.value;
@@ -117,7 +135,7 @@ const moveToMFA = function(json) {
         break;
       default:
         console.log("Defaulted to Failure...")
-        displayFailure()
+        displayFailure("Account or password incorrect")
     }
   }
   else {
@@ -126,13 +144,13 @@ const moveToMFA = function(json) {
     console.log(typeof(json))
     console.log(json.mfa)
     console.log("Defaulting to failure...")
-    displayFailure()
+    displayFailure("Account or password incorrect")
   }
 }
 
-const displayFailure = function() {
+const displayFailure = function(type) {
   // update headers
-  document.getElementById("headerField").innerHTML = "Account or Password incorrect";
+  document.getElementById("headerField").innerHTML = type;
   document.getElementById("subheaderField").innerHTML = "Please refresh and try again";
 
   // reset inputs
@@ -140,6 +158,11 @@ const displayFailure = function() {
   var inputField = document.querySelector("#inputField")
 
   //inputField.parentNode.insertBefore(bullets, inputField)
+  document.getElementById("buttonText").innerHTML = "Retry"
+  document.getElementById("loginButton").onclick = function() {
+    console.log("I should refresh now")
+    location.reload(true);
+  }
 
   // update opacities
   inputField.style.opacity = "100"
