@@ -1,0 +1,141 @@
+/* font family import */
+@font-face {
+  font-family: 'Product Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/productsans/v5/HYvgU2fE2nRJvZ5JFAumwegdm0LZdjqr5-oayXSOefg.woff2) format('woff2');
+}
+
+body {
+  margin: 0;
+  font-family: 'Product Sans';
+}
+
+.logo {
+  width: 112px;
+  height: 36px;
+  margin: 30px auto;
+}
+
+p:nth-child(2) {
+  font-size: 35px;
+  text-align: center;
+  margin-top: -10px;
+}
+
+p:nth-child(3) {
+  font-size: 20px;
+  text-align: center;
+  margin-top: -25px;
+}
+
+.login {
+  height: 325px;
+  width: 350px;
+  margin: auto;
+  background-color: #F7F7F7;
+  box-shadow: 0px 1px 1px 0px grey;
+}
+
+.login > div:nth-child(3) {
+  width: 100px;
+  margin: auto;
+}
+
+.login > div:nth-child(3) > img {
+  height: 100px;
+  border-radius: 100%;
+}
+
+.selected {
+    border:3px solid black;
+    border-radius:30px;
+    padding: 3px;
+    -webkit-border-radius:30px;
+    -moz-border-radius:30px;
+}
+
+.inputs {
+  position: relative;
+}
+
+.inputField {
+  height: 35px;
+  width: 250px;
+  margin-left: 48px;
+  font-size: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.overlay {
+  z-index: -1;
+  opacity: 0;
+}
+
+.button {
+  display: inline-block;
+  height: 40px;
+  width: 250px;
+  margin-left: 55px;
+  text-align: center;
+  background-color:dodgerblue;
+  border: 1px solid blue;
+  color: white;
+  font-weight: bold;
+}
+
+.login > a:last-child {
+  display: inline-block;
+  float: right;
+  margin-right: 49px;
+  font-size: 14px;
+  text-decoration: none;
+  color: mediumblue;
+}
+
+.login >a:last-child:hover {
+  text-decoration: underline;
+}
+
+p:nth-child(5) {
+  text-align: center;
+}
+
+p > a {
+  text-decoration: none;
+  color: mediumblue;
+}
+
+p > a:hover {
+  text-decoration: underline;
+}
+
+p:nth-child(6) {
+  text-align: center;
+}
+
+.logo-strip {
+  width: 230px;
+  margin: -10px auto;
+}
+
+.bottom {
+  height: 35px;
+  width: 100%;
+  border-top: 0.5px solid #E5E5E5;
+  position: fixed;
+  bottom: 0;
+  font-size: 12px;
+  background-color: white;
+}
+
+.bottom a {
+  margin-left: 24px;
+  text-decoration: none;
+}
+
+.bottom a:hover {
+  text-decoration: underline;
+}

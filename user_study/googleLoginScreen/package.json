@@ -1,0 +1,14 @@
+{
+  "name": "googleloginscreen",
+  "version": "1.0.0",
+  "description": "google login screen",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "mmtolbert",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
